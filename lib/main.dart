@@ -57,15 +57,21 @@ class _MyAppState extends State<MyApp> {
             future: futurePictures,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return PhotoViewGallery.builder(
-                    itemCount: snapshot.data!.pictureCollection.length,
-                    scrollPhysics: const BouncingScrollPhysics(),
-                    builder: (BuildContext context, int index) {
-                      return PhotoViewGalleryPageOptions(
-                          imageProvider: NetworkImage(snapshot.data!.pictureCollection[index]['urls']['full']),
-                          heroAttributes: PhotoViewHeroAttributes(tag: Text('fadf'))
-                      );
-                    });
+                return Scaffold(
+                  appBar: AppBar(title: Text('${snapshot.data!.pictureCollection[_pageIndex]["created_at"]}'), centerTitle: true),
+                  body: PhotoViewGallery.builder(
+                      itemCount: snapshot.data!.pictureCollection.length,
+                      scrollPhysics: const BouncingScrollPhysics(),
+                      onPageChanged: (int i) => setState(() {
+                        _pageIndex = i;
+                      }),
+                      builder: (BuildContext context, int index) {
+                        return PhotoViewGalleryPageOptions(
+                            imageProvider: NetworkImage(snapshot.data!.pictureCollection[index]['urls']['full']),
+                            heroAttributes: PhotoViewHeroAttributes(tag: Text('fadf'))
+                        );
+                      }),
+                );
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
